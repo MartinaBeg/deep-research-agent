@@ -1,13 +1,12 @@
-# Deep Research Agent — a Claude Code agent that doesn't hallucinate
+# Deep Research Agent
 
-A Claude Code plugin that researches **any subject** (a company, person, product, place,
-or event) and writes an **in-depth, fully-cited report** where **every sentence is backed
-by a quote that was verified to literally exist in a real source**. It produces a Markdown
-report and a formatted PDF (roomy spacing, clickable links, page-numbered table of
-contents).
+A standalone command-line agent that researches **any subject** (a company, person,
+product, place, or event) and writes an **in-depth, fully-cited report** where **every
+sentence is backed by a quote verified to literally exist in a real source**. It outputs
+a Markdown report and a formatted PDF (roomy spacing, clickable links, page-numbered
+table of contents).
 
-The only keys it needs are for the web tools it uses to read the internet — **Serper**
-(search) and **Firecrawl** (scraping). No Anthropic API key is required.
+It runs **anywhere** — a terminal, a server, CI, Docker — like any Python program.
 
 ## How it works — "extract, then write"
 
@@ -15,64 +14,79 @@ Most research tools scrape some pages, stuff them into a prompt, and let the mod
 free-write a long report. When pushed for length, the model invents plausible-sounding
 detail. This agent inverts that:
 
-1. **Search** the web with Serper.
-2. **Scrape** the top sources with Firecrawl.
-3. **Extract** atomic facts, each stored as *(fact, verbatim quote, source URL)*.
-4. **Validate** — a script checks that each quote *literally appears* in its source;
-   anything that doesn't is discarded. (This is what makes hallucination impossible.)
-5. **Write** each section using *only* the validated facts, citing every sentence.
-6. **Verify** — every sentence is re-checked against its fact; unsupported or uncited
+1. **Plan** sections appropriate to the subject.
+2. **Search** the web (Serper).
+3. **Scrape** the top sources (Firecrawl).
+4. **Extract** atomic facts, each stored as *(fact, verbatim quote, source URL)*.
+5. **Validate** — every quote is checked to *literally appear* in its source; anything
+   that doesn't is discarded. (This is what makes hallucination impossible.)
+6. **Write** each section using *only* validated facts, citing every sentence.
+7. **Verify** — each sentence is re-checked against its fact; unsupported or uncited
    sentences are deleted.
-7. **Render** a styled PDF.
+8. **Render** a styled PDF.
 
 Depth follows the evidence: the report is as long as the validated facts honestly
 support, and is never padded.
 
 ## Install
 
-```
-/plugin marketplace add MartinaBeg/deep-research-agent
-/plugin install deep-research-agent
-```
-(or clone this repo and add it as a local plugin).
-
-Then install the Python dependencies and set your web-tool keys:
-
-```
-pip install -r requirements.txt
-cp .env.example .env      # then fill in SERPER_API_KEY and FIRECRAWL_API_KEY
+```bash
+git clone https://github.com/MartinaBeg/deep-research-agent.git
+cd deep-research-agent
+python3.11 -m venv .venv && source .venv/bin/activate
+pip install -e .
+cp .env.example .env        # then fill in the three keys
 ```
 
-- Get a **Serper** key at https://serper.dev
-- Get a **Firecrawl** key at https://firecrawl.dev
+## Configure
 
-## Use
+Set three keys in `.env`:
 
-Just ask Claude Code:
+| Key | What for | Get one at |
+|---|---|---|
+| `SERPER_API_KEY` | web search | https://serper.dev |
+| `FIRECRAWL_API_KEY` | web scraping | https://firecrawl.dev |
+| `ANTHROPIC_API_KEY` | the agent's reasoning | https://console.anthropic.com |
 
-> Use the Deep Research Agent to write a report on **\<your topic\>**.
+## Run
 
-It will plan the sections, gather and verify sources, and produce
-`research-<topic>/report.md` and `research-<topic>/report.pdf`.
+```bash
+deep-research "Sydney Sweeney"
+# or, equivalently:
+python -m deep_research "Abaka AI (abaka.ai), a data company"
+```
 
-## What's in the box
+Output is written to `reports/report_<slug>.md` and `reports/report_<slug>.pdf`.
+Add `--no-pdf` for Markdown only.
+
+### Docker
+
+```bash
+docker build -t deep-research-agent .
+docker run --rm --env-file .env -v "$PWD/reports:/app/reports" \
+  deep-research-agent "Sydney Sweeney"
+```
+
+## Project layout
 
 | Path | What it is |
 |---|---|
-| `agents/deep-research-agent.md` | The agent — the grounded extract-then-write methodology Claude Code follows |
-| `scripts/search.py` | Serper web search → list of URLs |
-| `scripts/scrape.py` | Firecrawl scraping → saved source text (cached) |
-| `scripts/check_quotes.py` | Deterministic grounding gate: keeps only facts whose quote is real |
-| `scripts/to_pdf.py` | Markdown → styled PDF (spacing, links, page-numbered TOC) |
+| `src/deep_research/pipeline.py` | The grounded extract-then-write pipeline (orchestration) |
+| `src/deep_research/web.py` | Serper search + Firecrawl scraping (cached) |
+| `src/deep_research/llm.py` | LLM wrapper (Claude) with rate-limit back-off |
+| `src/deep_research/pdf.py` | Markdown → styled PDF (spacing, links, page-numbered TOC) |
+| `src/deep_research/config.py` | Settings from `.env` |
+| `src/deep_research/__main__.py` | CLI entry point |
 
 ## Notes
 
-- The deterministic steps (search, scrape, quote-check, PDF) are plain Python and use no
-  LLM. The reasoning steps (extract, write, verify) are performed by Claude Code itself.
+- The deterministic steps (search, scrape, quote-check, PDF) use no LLM. The reasoning
+  steps (extract, write, verify) call Claude; to use a different model set `DR_SMART_MODEL`
+  / `DR_FAST_MODEL`.
+- Firecrawl can't scrape every site (some block scrapers); those sources are skipped and
+  the report stays grounded in what was actually fetched.
 - PDFs use a system Unicode font if available (set `REPORT_FONT` to a `.ttf` for best
   results); otherwise they fall back to a built-in font.
-- Firecrawl can't scrape every site (some block scrapers); those sources are simply
-  skipped, and the report stays grounded in what was actually fetched.
 
 ## License
 

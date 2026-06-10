@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deep-research-agent"
+version = "0.2.0"
+description = "Grounded, fully-cited research reports — searches the web, scrapes sources, extracts only quote-verified facts, and writes a report where every sentence is backed by a real source. No hallucinations."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Martina Beg" }]
+keywords = ["research", "agent", "grounded", "citations", "serper", "firecrawl", "report", "pdf"]
+dependencies = [
+  "anthropic>=0.40",
+  "firecrawl-py>=4.0",
+  "requests>=2.31",
+  "python-dotenv>=1.0",
+  "markdown2>=2.4",
+  "fpdf2>=2.7",
+]
+
+[project.scripts]
+deep-research = "deep_research.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/MartinaBeg/deep-research-agent"
+
+[tool.setuptools.packages.find]
+where = ["src"]

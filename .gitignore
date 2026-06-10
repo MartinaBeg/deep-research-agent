@@ -3,14 +3,16 @@
 .env.*
 !.env.example
 
-# Working output
-research-*/
-sources/
+# Output
+reports/
 *.pdf
 
 # Python
 __pycache__/
 *.pyc
+*.egg-info/
+build/
+dist/
 .venv/
 venv/
 
