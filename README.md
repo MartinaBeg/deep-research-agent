@@ -6,9 +6,8 @@ by a quote that was verified to literally exist in a real source**. It produces 
 report and a formatted PDF (roomy spacing, clickable links, page-numbered table of
 contents).
 
-It runs **inside your Claude Code**, so the reasoning uses **your Claude subscription —
-no Anthropic API key required.** The only keys it needs are for the web tools it uses to
-read the internet: **Serper** (search) and **Firecrawl** (scraping).
+The only keys it needs are for the web tools it uses to read the internet — **Serper**
+(search) and **Firecrawl** (scraping). No Anthropic API key is required.
 
 ## How it works — "extract, then write"
 
@@ -47,8 +46,6 @@ cp .env.example .env      # then fill in SERPER_API_KEY and FIRECRAWL_API_KEY
 - Get a **Serper** key at https://serper.dev
 - Get a **Firecrawl** key at https://firecrawl.dev
 
-(No Anthropic API key — the reasoning runs on your Claude Code subscription.)
-
 ## Use
 
 Just ask Claude Code:
@@ -71,7 +68,7 @@ It will plan the sections, gather and verify sources, and produce
 ## Notes
 
 - The deterministic steps (search, scrape, quote-check, PDF) are plain Python and use no
-  LLM. The reasoning steps (extract, write, verify) are performed by your Claude Code.
+  LLM. The reasoning steps (extract, write, verify) are performed by Claude Code itself.
 - PDFs use a system Unicode font if available (set `REPORT_FONT` to a `.ttf` for best
   results); otherwise they fall back to a built-in font.
 - Firecrawl can't scrape every site (some block scrapers); those sources are simply

@@ -1,7 +1,7 @@
 {
   "name": "deep-research-agent",
   "version": "0.1.0",
-  "description": "Deep Research Agent for Claude Code: searches the web (Serper), scrapes sources (Firecrawl), extracts only quote-verified facts, and writes an in-depth, fully-cited report with a formatted PDF. Every sentence is backed by a real source quote — no hallucinations. Uses your Claude Code subscription for reasoning (no Anthropic API key required).",
+  "description": "Deep Research Agent for Claude Code: searches the web (Serper), scrapes sources (Firecrawl), extracts only quote-verified facts, and writes an in-depth, fully-cited report with a formatted PDF. Every sentence is backed by a real source quote — no hallucinations.",
   "author": { "name": "Martina Beg" },
   "keywords": ["research", "agent", "grounded", "citations", "serper", "firecrawl", "report", "pdf"]
 }
