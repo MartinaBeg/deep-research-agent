@@ -1,4 +1,4 @@
-# Grounded Research — a Claude Code agent that doesn't hallucinate
+# Deep Research Agent — a Claude Code agent that doesn't hallucinate
 
 A Claude Code plugin that researches **any subject** (a company, person, product, place,
 or event) and writes an **in-depth, fully-cited report** where **every sentence is backed
@@ -32,8 +32,8 @@ support, and is never padded.
 ## Install
 
 ```
-/plugin marketplace add MartinaBeg/grounded-research
-/plugin install grounded-research
+/plugin marketplace add MartinaBeg/deep-research-agent
+/plugin install deep-research-agent
 ```
 (or clone this repo and add it as a local plugin).
 
@@ -53,7 +53,7 @@ cp .env.example .env      # then fill in SERPER_API_KEY and FIRECRAWL_API_KEY
 
 Just ask Claude Code:
 
-> Use the grounded-researcher agent to write a report on **\<your topic\>**.
+> Use the Deep Research Agent to write a report on **\<your topic\>**.
 
 It will plan the sections, gather and verify sources, and produce
 `research-<topic>/report.md` and `research-<topic>/report.pdf`.
@@ -62,7 +62,7 @@ It will plan the sections, gather and verify sources, and produce
 
 | Path | What it is |
 |---|---|
-| `agents/grounded-researcher.md` | The agent — the grounded extract-then-write methodology Claude Code follows |
+| `agents/deep-research-agent.md` | The agent — the grounded extract-then-write methodology Claude Code follows |
 | `scripts/search.py` | Serper web search → list of URLs |
 | `scripts/scrape.py` | Firecrawl scraping → saved source text (cached) |
 | `scripts/check_quotes.py` | Deterministic grounding gate: keeps only facts whose quote is real |
