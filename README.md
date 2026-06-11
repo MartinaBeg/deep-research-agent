@@ -5,10 +5,8 @@ person, product, place, or event) where **every sentence is backed by a quote ve
 literally exist in a real source**. It outputs a Markdown report and a formatted PDF (roomy
 spacing, clickable links, page-numbered table of contents).
 
-**It runs inside your coding-agent tool** — Claude Code, Codex, Cursor, and others — and
-uses **that tool's own model** to do the reasoning. So there's **no LLM API key and no
-credits**: the host already has a brain. The only keys it needs are for reading the web:
-**Serper** (search) and **Firecrawl** (scraping).
+It reads the web with **Serper** (search) and **Firecrawl** (scraping), and is driven by
+your coding-agent tool (Claude Code, Codex, Cursor, …).
 
 ## How it works — "extract, then write"
 
@@ -24,10 +22,9 @@ free-write — which invents detail when pushed for length. This agent inverts t
 6. **Verify** — delete any sentence not supported by its fact, or with no citation.
 7. **Render** a styled PDF.
 
-The reasoning steps are done by your tool's model; the mechanical steps are plain Python
-scripts (no model). Depth follows the evidence — the report is never padded.
+Depth follows the evidence — the report is never padded.
 
-## Use it (any agent tool)
+## Use it
 
 1. Clone the repo and install the script dependencies:
    ```bash
@@ -39,19 +36,14 @@ scripts (no model). Depth follows the evidence — the report is never padded.
 2. Open the folder in your agent tool and ask it to research something:
    > Research **Sydney Sweeney** using the deep research agent.
 
-   - **Claude Code** reads `CLAUDE.md` → `AGENTS.md`.
-   - **Codex / Cursor / others** read `AGENTS.md` directly.
-
-   The tool follows the procedure, runs the scripts, and produces
-   `research-<topic>/report.md` and `research-<topic>/report.pdf`.
-
-No model API key is required — your agent tool's own model does the thinking.
+   It follows the procedure in `AGENTS.md` (Claude Code reads `CLAUDE.md` → `AGENTS.md`),
+   runs the scripts, and produces `research-<topic>/report.md` and `report.pdf`.
 
 ## What's in the box
 
 | Path | What it is |
 |---|---|
-| `AGENTS.md` | The agent — the grounded procedure your tool's model follows |
+| `AGENTS.md` | The agent — the grounded procedure to follow |
 | `CLAUDE.md` | Points Claude Code at `AGENTS.md` |
 | `scripts/search.py` | Serper web search → URLs |
 | `scripts/scrape.py` | Firecrawl scraping → saved source text (cached) |
@@ -60,8 +52,8 @@ No model API key is required — your agent tool's own model does the thinking.
 
 ## Notes
 
-- The scripts use no model. The reasoning is your agent tool's own model — so the agent
-  is portable across tools and needs no LLM credits.
+- The scripts are plain Python; the reasoning (extract, write, verify) is done by your
+  agent tool's model.
 - The grounding gate runs regardless of which model reasons, so even a smaller model
   can't hallucinate — it just writes a little less elegantly.
 - Firecrawl can't scrape every site (some block scrapers); those are skipped and the
