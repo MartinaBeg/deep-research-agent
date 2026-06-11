@@ -2,8 +2,7 @@
 
 A research agent that writes an **in-depth, fully-cited report** on any subject (a company,
 person, product, place, or event) where **every sentence is backed by a quote verified to
-literally exist in a real source**. It outputs a Markdown report and a formatted PDF (roomy
-spacing, clickable links, page-numbered table of contents).
+literally exist in a real source**. It outputs a Markdown report and a formatted PDF.
 
 It reads the web with **Serper** (search) and **Firecrawl** (scraping), and is driven by
 your coding-agent tool (Claude Code, Codex, Cursor, …).
