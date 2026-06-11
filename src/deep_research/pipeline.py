@@ -41,7 +41,7 @@ Return ONLY JSON:
 
 
 def plan_report(topic):
-    data = llm.claude_json(PLAN_PROMPT.format(topic=topic), max_tokens=1500)
+    data = llm.complete_json(PLAN_PROMPT.format(topic=topic), max_tokens=1500)
     secs = (data or {}).get("sections") if isinstance(data, dict) else None
     plan = []
     if secs:
@@ -92,10 +92,10 @@ SOURCE ({url}):
 
 
 def extract_facts(topic, url, content, section_keys):
-    data = llm.claude_json(
+    data = llm.complete_json(
         EXTRACT_PROMPT.format(topic=topic, url=url, sections=", ".join(section_keys),
                               source=content[:SOURCE_CHARS]),
-        max_tokens=4000, model=config.FAST_MODEL,
+        max_tokens=4000, fast=True,
     )
     if not isinstance(data, list):
         return []
@@ -137,7 +137,7 @@ def write_section(topic, title, facts):
     if not facts:
         return ""
     listing = "\n".join(f"[F{f['id']}] {f['fact']}" for f in facts)
-    return llm.claude(WRITE_PROMPT.format(title=title, topic=topic, facts=listing), max_tokens=4000)
+    return llm.complete(WRITE_PROMPT.format(title=title, topic=topic, facts=listing), max_tokens=4000)
 
 
 # ------------------------------------------------------------------- 5. VERIFY
@@ -156,8 +156,8 @@ def verify_sentences(units, facts_by_id):
     for i, (sent, ids) in enumerate(units, 1):
         ev = " ".join(f'FACT[F{j}]: "{facts_by_id[j]["quote"]}"' for j in ids if j in facts_by_id)
         blocks.append(f"{i}. STATEMENT: {sent}\n   {ev}")
-    data = llm.claude_json(VERIFY_PROMPT.format(items="\n".join(blocks)),
-                           max_tokens=1500, model=config.FAST_MODEL)
+    data = llm.complete_json(VERIFY_PROMPT.format(items="\n".join(blocks)),
+                             max_tokens=1500, fast=True)
     passed = set()
     if isinstance(data, list):
         for d in data:

@@ -34,19 +34,31 @@ support, and is never padded.
 git clone https://github.com/MartinaBeg/deep-research-agent.git
 cd deep-research-agent
 python3.11 -m venv .venv && source .venv/bin/activate
-pip install -e .
-cp .env.example .env        # then fill in the three keys
+pip install .
+cp .env.example .env
 ```
 
 ## Configure
 
-Set three keys in `.env`:
+**Web tools** (always needed) — set in `.env`:
 
 | Key | What for | Get one at |
 |---|---|---|
 | `SERPER_API_KEY` | web search | https://serper.dev |
 | `FIRECRAWL_API_KEY` | web scraping | https://firecrawl.dev |
-| `ANTHROPIC_API_KEY` | the agent's reasoning | https://console.anthropic.com |
+
+**The brain** (reasoning) — by default the agent uses a **free local model** via
+[Ollama](https://ollama.com), so it needs **no LLM API key and no credits**:
+
+```bash
+# install Ollama from https://ollama.com, then:
+ollama pull qwen2.5:7b
+```
+
+That's it — `LLM_PROVIDER=ollama` is the default. Prefer a cloud model? Set
+`LLM_PROVIDER=anthropic` (with `ANTHROPIC_API_KEY`) or `LLM_PROVIDER=openai`
+(with `OPENAI_API_KEY`; also works with Groq via `OPENAI_BASE_URL`). The grounding
+gate keeps every model honest, so the local model can't hallucinate either.
 
 ## Run
 
@@ -81,8 +93,8 @@ docker run --rm --env-file .env -v "$PWD/reports:/app/reports" \
 ## Notes
 
 - The deterministic steps (search, scrape, quote-check, PDF) use no LLM. The reasoning
-  steps (extract, write, verify) call Claude; to use a different model set `DR_SMART_MODEL`
-  / `DR_FAST_MODEL`.
+  steps (extract, write, verify) call whichever model `LLM_PROVIDER` selects (a free local
+  Ollama model by default).
 - Firecrawl can't scrape every site (some block scrapers); those sources are skipped and
   the report stays grounded in what was actually fetched.
 - PDFs use a system Unicode font if available (set `REPORT_FONT` to a `.ttf` for best
