@@ -9,14 +9,6 @@ your coding-agent tool (Claude Code, Codex, Cursor, …).
 
 ## How it works — "extract, then write"
 
-Use it whenever research needs to be trusted, not just read — company due diligence, a
-journalist's background file, competitive or investor research, a briefing memo. Its
-advantage is traceability: every sentence is tied to a specific quote from a real source,
-and anything that can't be is dropped — so the report arrives already fact-checked and
-auditable line by line, rather than as a fluent draft you still have to verify.
-
-It achieves this by extracting facts *before* it writes:
-
 1. **Plan** sections for the subject.
 2. **Search** (Serper) and **scrape** (Firecrawl) the sources.
 3. **Extract** atomic facts, each as *(fact, verbatim quote, source URL)*.
